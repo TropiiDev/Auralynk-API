@@ -1,0 +1,9 @@
+.venv/
+.idea/
+__pycache__/
+/youtube/__pycache__/
+/spotify/__pycache__/
+/downloads/
+/spotify/time.txt
+database.db
+.env
