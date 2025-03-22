@@ -2,7 +2,7 @@ import random
 
 from fastapi import HTTPException
 from functions import *
-from models import *
+from tables import *
 from sql import *
 from spotify.spotify_functions import *
 from youtube.youtube_functions import *
