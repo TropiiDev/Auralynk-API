@@ -19,7 +19,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/")
 async def root():
     return {"message": "Welcome to Auralynk"}
@@ -90,9 +89,14 @@ async def youtube_search(search: QuerySong):
     return {"url": result['link'], "title": result['title']}
 
 @app.post("/email/welcome")
-async def email_welcome(email: WelcomeEmail):
-    is_email_sent = send_welcome_email(email.email, email.name)
+async def email_welcome(email: WelcomeEmail, session: SessionDep):
+    does_user_exist = session.query(EmailList).filter(EmailList.email == email.email).first()
     
+    if not does_user_exist:
+        add_user_to_email_list(email, session)
+        
+    is_email_sent = send_welcome_email(email.email, email.name)
+
     if not is_email_sent:
         raise HTTPException(status_code=500, detail="Email not sent")
 

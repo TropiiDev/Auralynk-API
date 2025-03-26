@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from mailersend import emails
+from ..sql import *
 
 load_dotenv()
 
@@ -36,4 +37,9 @@ def send_welcome_email(email: str, name: str):
 
     return True
 
-send_welcome_email("colinbassett28@proton.me", "Colin")
+def add_user_to_email_list(email: EmailTable, session: SessionDep):
+    db_user = EmailList.model_validate(email)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user

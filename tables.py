@@ -3,9 +3,17 @@ from sqlalchemy import Column, JSON
 from sqlmodel import Field, SQLModel
 
 # Email Tables
-class WelcomeEmail(BaseModel):
+class EmailTable(BaseModel):
     email: str
     name: str
+
+class Email(BaseModel):
+    email: str
+
+class EmailList(SQLModel, table=True):
+    id: int = Field(primary_key=True, index=True)
+    email: str = Field(index=True, unique=True)
+    name: str | None = Field(default=None)
 
 # Song Tables
 class Song(BaseModel):
