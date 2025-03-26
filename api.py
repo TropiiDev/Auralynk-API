@@ -89,7 +89,7 @@ async def youtube_search(search: QuerySong):
     return {"url": result['link'], "title": result['title']}
 
 @app.post("/email/welcome")
-async def email_welcome(email: WelcomeEmail, session: SessionDep):
+async def email_welcome(email: EmailTable, session: SessionDep):
     does_user_exist = session.query(EmailList).filter(EmailList.email == email.email).first()
     
     if not does_user_exist:
