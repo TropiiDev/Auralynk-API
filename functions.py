@@ -1,6 +1,7 @@
 import hashlib
 
-from tables import MainUser
+from tables import *
+from sql import *
 
 def hash_password(password: str, salt: int = None):
     password = f"{password}{salt}"
@@ -15,3 +16,10 @@ def validate_password(password: str, hash: str, salt: int) -> bool:
         return True
 
     return False
+
+def add_user_to_email_list(email: EmailTable, session: SessionDep):
+    db_user = EmailList.model_validate(email)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
