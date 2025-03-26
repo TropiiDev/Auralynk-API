@@ -19,6 +19,7 @@ This is the API behind all current and future Auralynk applications.
 - [SerpAPI](https://serpapi.com/) - For searching for songs on YouTube
 - [Spotify Developer API](https://developer.spotify.com/) - For searching for songs & artists on Spotify
 - [FastAPI](https://fastapi.tiangolo.com/) - For the backend of the Auralynk API (see the API folder. It will be moved to its own repo once its finished.)
+- [Mailersend](https://mailersend.com) - For sending emails
 # -------------------------------------
 ## Versioning layout
 - Major.Minor.Patch

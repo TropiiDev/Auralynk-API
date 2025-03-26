@@ -2,6 +2,11 @@ from pydantic import BaseModel
 from sqlalchemy import Column, JSON
 from sqlmodel import Field, SQLModel
 
+# Email Tables
+class WelcomeEmail(BaseModel):
+    email: str
+    name: str
+
 # Song Tables
 class Song(BaseModel):
     name: str

@@ -1,6 +1,6 @@
 import hashlib
 
-from sql import MainUser
+from tables import MainUser
 
 def hash_password(password: str, salt: int = None):
     password = f"{password}{salt}"

@@ -5,5 +5,6 @@ __pycache__/
 /spotify/__pycache__/
 /downloads/
 /spotify/time.txt
+/emails/__pycache__/
 database.db
 .env

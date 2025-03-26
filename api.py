@@ -6,6 +6,8 @@ from tables import *
 from sql import *
 from spotify.spotify_functions import *
 from youtube.youtube_functions import *
+from emails.email_functions import *
+from tables import *
 
 app = FastAPI(lifespan=lifespan)
 
@@ -78,3 +80,11 @@ async def youtube_search(search: QuerySong):
     result = search_youtube(search.query)
     return {"url": result['link'], "title": result['title']}
 
+@app.post("/email/welcome")
+async def email_welcome(email: WelcomeEmail):
+    is_email_sent = send_welcome_email(email.email, email.name)
+    
+    if not is_email_sent:
+        raise HTTPException(status_code=500, detail="Email not sent")
+
+    return {"message": "Email sent"}
