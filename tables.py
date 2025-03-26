@@ -2,6 +2,14 @@ from pydantic import BaseModel
 from sqlalchemy import Column, JSON
 from sqlmodel import Field, SQLModel
 
+# Token Tables
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: str or None = None
+
 # Email Tables
 class EmailTable(BaseModel):
     email: str
@@ -28,9 +36,11 @@ class User(SQLModel):
     name: str
     age: int | None
     email: str
+    username: str
 
 class MainUser(User, table=True):
     id: int | None = Field(default=None, primary_key=True, index=True)
+    username: str = Field(index=True, unique=True)
     email: str = Field(index=True, unique=True)
     password: str
     salt: int

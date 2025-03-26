@@ -1,7 +1,9 @@
 import random
 
+from auth import *
 from emails.email_functions import *
 from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from functions import *
 from tables import *
 from spotify.spotify_functions import *
@@ -95,7 +97,7 @@ async def email_welcome(email: EmailTable, session: SessionDep):
     if not does_user_exist:
         did_add_user = add_user_to_email_list(email, session)
         if did_add_user is None:
-            return HTTPException(status_code=500, detail="Failed to add user to email list")
+            raise HTTPException(status_code=500, detail="Failed to add user to email list")
         
         is_email_sent = send_welcome_email(email.email, email.name)
 
@@ -105,3 +107,35 @@ async def email_welcome(email: EmailTable, session: SessionDep):
         return {"message": "Email sent"}
     else:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+@app.post("/email/add")
+async def add_email(email: EmailTable, session: SessionDep):
+    does_user_exist = session.query(EmailList).filter(EmailList.email == email.email).first()
+    print(does_user_exist)
+    if not does_user_exist:
+        did_add_user = add_user_to_email_list(email, session)
+        if did_add_user is None:
+            raise HTTPException(status_code=500, detail="Failed to add user to email list")
+        
+        return did_add_user
+    
+    raise HTTPException(status_code=400, detail="Email already registered")
+
+@app.get("/email/list")
+async def get_email_list(session: SessionDep, current_user: User = Depends(get_current_user)):
+    email_list = session.query(EmailList.email).all()
+    return {"emails": [email[0] for email in email_list]}
+
+@app.post('/token', response_model=Token)
+async def login_for_access_token(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(form_data.username, form_data.password, session)
+    if not user:
+        raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Bearer"})
+
+    access_token_expires = timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES")))
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me/", response_model=UserPublic)
+async def read_users_me(session: SessionDep, current_user: User = Depends(get_current_user)):
+    return current_user
