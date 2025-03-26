@@ -1,15 +1,24 @@
 import random
 
+from emails.email_functions import *
 from fastapi import HTTPException
 from functions import *
 from tables import *
-from sql import *
 from spotify.spotify_functions import *
+from sql import *
+from starlette.middleware.cors import CORSMiddleware
 from youtube.youtube_functions import *
-from emails.email_functions import *
 from tables import *
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 async def root():
