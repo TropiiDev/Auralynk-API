@@ -93,11 +93,15 @@ async def email_welcome(email: WelcomeEmail, session: SessionDep):
     does_user_exist = session.query(EmailList).filter(EmailList.email == email.email).first()
     
     if not does_user_exist:
-        add_user_to_email_list(email, session)
+        did_add_user = add_user_to_email_list(email, session)
+        if did_add_user is None:
+            return HTTPException(status_code=500, detail="Failed to add user to email list")
         
-    is_email_sent = send_welcome_email(email.email, email.name)
+        is_email_sent = send_welcome_email(email.email, email.name)
 
-    if not is_email_sent:
-        raise HTTPException(status_code=500, detail="Email not sent")
+        if not is_email_sent:
+            raise HTTPException(status_code=500, detail="Email not sent")
 
-    return {"message": "Email sent"}
+        return {"message": "Email sent"}
+    else:
+        raise HTTPException(status_code=400, detail="Email already registered")
