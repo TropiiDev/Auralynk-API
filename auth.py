@@ -9,6 +9,10 @@ from tables import *
 from sql import *
 from functions import *
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 secret_key = os.getenv("SECRET_KEY")
 algo = os.getenv("ALGORITHM")
 
